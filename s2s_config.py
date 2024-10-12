@@ -67,15 +67,15 @@ class TTSAdapterConfig:
 
 @dataclass
 class ModelConfig:
-    file: str = "examples/s2s/model/slam_model_s2s.py:model_factory"
-    llm_name: str = "vicuna-13b-v1.5"
-    llm_path: str = "PATH/to/LLAMA/7B"
+    file: str = "model/slam_model_s2s.py:model_factory"
+    llm_name: str = "qwen2-0.5b"
+    llm_path: str = "Qwen/Qwen2-0.5B"
     llm_type: str = "decoder_only"
-    llm_dim: int = 4096
-    encoder_name: Optional[str] = None
+    llm_dim: int = 896
+    encoder_name: Optional[str] = "whisper"
     encoder_ds_rate: int = 2
-    encoder_path: Optional[str] = None
-    encoder_dim: int = 1280
+    encoder_path: Optional[str] = "small"
+    encoder_dim: int = 768
     encoder_projector: str = "linear"
     encoder_projector_ds_rate: int = 5
     modal: str = "audio"
@@ -86,9 +86,9 @@ class ModelConfig:
         "help": "whether model is only pretrained or finetuned, used for models such as hubert"
     })
     vocab_config: VocabConfig = field(default_factory=VocabConfig)
-    codec_decode: bool = False
+    codec_decode: bool = True
     codec_decoder_type: str = "SNAC"
-    codec_decoder_path: Optional[str] = None
+    codec_decoder_path: Optional[str] = "hubertsiuzdak/snac_24khz"
     tts_adapter: bool = False
     tts_adapter_config: TTSAdapterConfig = field(default_factory=TTSAdapterConfig)
 
@@ -106,20 +106,20 @@ class PeftConfig:
 
 @dataclass
 class TrainConfig:
-    model_name:str = "PATH/to/LLAMA/7B"
+    model_name:str = "s2s"
     enable_ddp:bool = False
     enable_deepspeed:bool = False
     enable_fsdp:bool = False
     low_cpu_fsdp:bool = False
     run_validation:bool = True
     batch_size_training:int = 4
-    batching_strategy:str = field(default="packing", metadata={
+    batching_strategy:str = field(default="custom", metadata={
         "help":"alternative: padding"
     }) #
     context_length:int = 4096
     gradient_accumulation_steps:int = 1
-    num_epochs:int = 3
-    num_workers_dataloader:int = 1
+    num_epochs:int = 1
+    num_workers_dataloader:int = 2
     warmup_steps:int = 1000
     total_steps:int = 100000
     validation_interval:int = 1000
@@ -146,10 +146,10 @@ class TrainConfig:
     run_test_during_validation:bool = False
     run_test_during_validation_file:str = "test.wav"
     run_test_during_validation_prompt:str = "<|S2S|>"
-    freeze_llm:bool = field(default=False, metadata={
+    freeze_llm:bool = field(default=True, metadata={
         "help": "whether to freeze llm when finetuning, should be true when use peft finetuning"
     })
-    freeze_encoder:bool = False
+    freeze_encoder:bool = True
     train_embed_only:bool = False
     train_audio_embed_only:bool = False
     task_type:str = "s2s"
@@ -169,8 +169,8 @@ class DataConfig:
     max_words: Optional[int] = None
     max_mel: Optional[float] = None
     fix_length_audio: int = -1
-    inference_mode:bool = False
-    input_type: str = field(default="raw", metadata={
+    inference_mode:bool = True
+    input_type: str = field(default="mel", metadata={
                                 "help":"Use raw when input is wav, mel when for whisper"
                             })
     mel_size: int = field(default=80, metadata={
@@ -190,11 +190,11 @@ class DataConfig:
 @dataclass
 class DecodeConfig:
     do_sample: bool = False
-    max_new_tokens: int = 256
+    max_new_tokens: int = 300
     min_length: int = 10
     temperature: float = 1.0
     top_k: int = 50
-    top_p: float = 1.0
+    top_p: float = 0.9
     num_beams: int = 1
     num_return_sequences: int = 1
     num_samples: int = 1
@@ -230,4 +230,11 @@ class LogConfig:
     wandb_exp_name: str = "exp_name"
     log_file: str = "/valleblob/v-wenxichen/exp/log/test.log"
     log_interval: int = 10
+    online_output_dir: Optional[str] = None
 
+@dataclass
+class InferenceConfig:
+    dataset_config: DataConfig = field(default_factory=DataConfig)
+    model_config: ModelConfig = field(default_factory=ModelConfig)
+    train_config: TrainConfig = field(default_factory=TrainConfig)
+    decode_config: DecodeConfig = field(default_factory=DecodeConfig)

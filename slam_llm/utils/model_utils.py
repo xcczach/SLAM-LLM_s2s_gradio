@@ -1,7 +1,7 @@
 from slam_llm.utils.dataset_utils import load_module_from_py_file
 from pathlib import Path
 
-def get_custom_model_factory(model_config, logger):
+def get_custom_model_factory(model_config):
     costom_model_path = model_config.get(
         "file", None
     )
@@ -25,6 +25,5 @@ def get_custom_model_factory(model_config, logger):
     try:
         return getattr(module, func_name)
     except AttributeError as e:
-        logger.info(f"It seems like the given method name ({func_name}) is not present in the model .py file ({module_path.as_posix()}).")
         raise e
     

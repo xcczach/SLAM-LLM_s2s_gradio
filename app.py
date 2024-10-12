@@ -1,19 +1,23 @@
 import gradio as gr
 import soundfile as sf
+import os
+from s2s import generate
+
+def get_tmp_path(file_name:str):
+    return os.path.join("tmp", file_name)
 
 # 音频处理函数：模拟大模型的推理过程
 def process_audio(audio_file):
-    # 使用soundfile读取音频
-    data, samplerate = sf.read(audio_file)
     
     # 模拟大模型推理过程（这里可以对音频数组进行处理）
-    processed_data = data  # 假装做了一些复杂的处理
+    result_audio_arr, sample_rate = generate(audio_file)
     
     # 将处理后的音频数组写回音频文件
-    sf.write("processed_audio.wav", processed_data, samplerate)
+    target_path = get_tmp_path("processed_audio.wav")
+    sf.write(target_path, result_audio_arr, sample_rate)
     
     # 返回处理后的音频文件
-    return "processed_audio.wav"
+    return target_path
 
 # 文本转音频函数：加载本地音频并模拟推理过程
 def text_to_audio(text):
@@ -24,10 +28,11 @@ def text_to_audio(text):
     processed_data = data  # 假装TTS
     
     # 将生成的音频写回文件
-    sf.write("processed_text_audio.wav", processed_data, samplerate)
+    target_path = get_tmp_path("processed_text_audio.wav")
+    sf.write(target_path, processed_data, samplerate)
     
     # 返回处理后的音频文件
-    return "processed_text_audio.wav"
+    return target_path
 
 # 创建Blocks页面
 with gr.Blocks() as demo:
