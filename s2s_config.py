@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Optional, List
 
+CKPT_PATH = "ckpts/model.pt"
+
 @dataclass
 class VocabConfig:
     text_vocabsize: int = 151936

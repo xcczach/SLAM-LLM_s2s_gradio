@@ -4,7 +4,7 @@ from slam_llm.utils.model_utils import get_custom_model_factory
 from utils.snac_utils import reconscruct_snac, reconstruct_tensors, layershift, get_snac_answer_token
 import whisper
 import numpy as np
-from s2s_config import InferenceConfig
+from s2s_config import InferenceConfig, CKPT_PATH
 from omegaconf import OmegaConf
 
 def extract_audio_feature(audio_path, mel_size):
@@ -105,7 +105,7 @@ def generate(wav_path: str)->tuple[np.ndarray, int|float]:
     random.seed(train_config.seed)
 
     model_factory = get_custom_model_factory(model_config)
-    model, _ = model_factory(train_config, model_config)
+    model, _ = model_factory(train_config, model_config, CKPT_PATH)
     codec_decoder = model.codec_decoder
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
