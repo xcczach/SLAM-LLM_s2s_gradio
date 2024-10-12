@@ -2,7 +2,6 @@
 # This software may be used and distributed according to the terms of the Llama 2 Community License Agreement.
 
 import importlib
-from functools import partial
 from pathlib import Path
 
 import torch

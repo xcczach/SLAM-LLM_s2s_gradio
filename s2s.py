@@ -1,7 +1,7 @@
 import random
 import torch
 from slam_llm.utils.model_utils import get_custom_model_factory
-from utils.snac_utils import reconscruct_snac, reconstruct_tensors, layershift, get_snac_answer_token
+from utils.snac_utils import reconscruct_snac, reconstruct_tensors, layershift
 import whisper
 import numpy as np
 from s2s_config import InferenceConfig, CKPT_PATH
