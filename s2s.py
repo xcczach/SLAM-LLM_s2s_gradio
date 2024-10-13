@@ -4,8 +4,25 @@ from slam_llm.utils.model_utils import get_custom_model_factory
 from utils.snac_utils import reconscruct_snac, reconstruct_tensors, layershift
 import whisper
 import numpy as np
-from s2s_config import InferenceConfig, CKPT_PATH
+from s2s_config import InferenceConfig, CKPT_PATH, CKPT_REPO, CKPT_LOCAL_DIR, CKPT_NAME
+import os
 from omegaconf import OmegaConf
+from huggingface_hub import hf_hub_download
+
+
+def pull_model_ckpt():
+    print("Pulling model checkpoint")
+    if os.path.exists(CKPT_PATH):
+        return
+    hf_hub_download(
+        repo_id=CKPT_REPO,
+        filename=CKPT_NAME,
+        local_dir=CKPT_LOCAL_DIR,
+        token=os.getenv("HF_TOKEN"),
+    )
+
+
+pull_model_ckpt()
 
 
 def extract_audio_feature(audio_path, mel_size):

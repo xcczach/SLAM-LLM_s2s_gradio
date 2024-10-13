@@ -5,6 +5,8 @@ from s2s import generate
 
 
 def get_tmp_path(file_name: str):
+    if not os.path.exists("tmp"):
+        os.makedirs("tmp")
     return os.path.join("tmp", file_name)
 
 
