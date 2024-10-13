@@ -5,9 +5,10 @@ from s2s import generate
 
 
 def get_tmp_path(file_name: str):
-    if not os.path.exists("tmp"):
-        os.makedirs("tmp")
-    return os.path.join("tmp", file_name)
+    temp_dir = "tempor"
+    if not os.path.exists(temp_dir):
+        os.makedirs(temp_dir)
+    return os.path.join(temp_dir, file_name)
 
 
 def process_audio(audio_file):

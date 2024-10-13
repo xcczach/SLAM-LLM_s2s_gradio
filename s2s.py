@@ -11,7 +11,8 @@ from huggingface_hub import hf_hub_download
 
 
 def pull_model_ckpt():
-    print("Pulling model checkpoint")
+    if not os.path.exists(CKPT_LOCAL_DIR):
+        os.makedirs(CKPT_LOCAL_DIR)
     if os.path.exists(CKPT_PATH):
         return
     hf_hub_download(

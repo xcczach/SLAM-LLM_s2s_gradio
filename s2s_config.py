@@ -3,7 +3,7 @@ from typing import Optional, List
 import os
 
 CKPT_NAME = "model.pt"
-CKPT_LOCAL_DIR = "ckpts"
+CKPT_LOCAL_DIR = "model_ckpts"
 CKPT_PATH = os.path.join(CKPT_LOCAL_DIR, CKPT_NAME)
 CKPT_REPO = "xcczach/mini-omni"
 

@@ -162,5 +162,5 @@ cython_debug/
 #.idea/
 
 # Generated tmp files
-tmp/
-ckpts/
+tempor/
+model_ckpts/
