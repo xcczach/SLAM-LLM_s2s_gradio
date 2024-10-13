@@ -27,7 +27,8 @@ demo = gr.Interface(
     inputs=[gr.Audio(label="User Input", type="filepath", format="wav")],
     outputs=[gr.Audio(label="Response")],
     title="Speech to Speech with Mini Omni",
-    description='<h2 style="text-align:center;">Ask anything and get the audio response!</h2>',
+    description='<h2 style="text-align:center;">Ask anything in English and get the audio response!</h2>',
+    article="Generation will take a while. Be patient! :)",
 )
 
 demo.launch()
