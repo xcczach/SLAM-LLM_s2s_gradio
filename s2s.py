@@ -8,6 +8,12 @@ from s2s_config import InferenceConfig, CKPT_PATH, CKPT_REPO, CKPT_LOCAL_DIR, CK
 import os
 from omegaconf import OmegaConf
 from huggingface_hub import hf_hub_download
+from typing import Callable
+
+
+def update_progress(progress_callback: Callable[[str], None] | None, message: str):
+    if progress_callback:
+        progress_callback(message)
 
 
 def pull_model_ckpt():
@@ -135,7 +141,9 @@ def generate_from_wav(
     return audio_hat, output_text
 
 
-def generate(wav_path: str) -> tuple[np.ndarray, int | float]:
+def generate(
+    wav_path: str, progress_callback: Callable[[str], None] | None = None
+) -> tuple[np.ndarray, int | float]:
     config = OmegaConf.structured(InferenceConfig())
     train_config, model_config, dataset_config, decode_config = (
         config.train_config,
@@ -148,6 +156,8 @@ def generate(wav_path: str) -> tuple[np.ndarray, int | float]:
     torch.manual_seed(train_config.seed)
     random.seed(train_config.seed)
 
+    update_progress(progress_callback, "Loading model")
+
     model_factory = get_custom_model_factory(model_config)
     model, _ = model_factory(train_config, model_config, CKPT_PATH)
     codec_decoder = model.codec_decoder
@@ -155,6 +165,7 @@ def generate(wav_path: str) -> tuple[np.ndarray, int | float]:
     model.to(device)
     model.eval()
 
+    update_progress(progress_callback, "Generating")
     output_wav, output_text = generate_from_wav(
         wav_path, model, codec_decoder, dataset_config, decode_config, device
     )

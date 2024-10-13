@@ -164,3 +164,4 @@ cython_debug/
 # Generated tmp files
 tempor/
 model_ckpts/
+.gradio/
