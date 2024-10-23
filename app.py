@@ -1,6 +1,7 @@
 import gradio as gr
 import soundfile as sf
 import os
+import spaces
 
 from s2s import generate
 
@@ -11,7 +12,7 @@ def get_tmp_path(file_name: str):
         os.makedirs(temp_dir)
     return os.path.join(temp_dir, file_name)
 
-
+@spaces.GPU
 def process_audio(audio_file):
     result_audio_arr, sample_rate = generate(audio_file, lambda msg: gr.Info(msg))
 
