@@ -143,12 +143,13 @@ def generate_from_wav(
 
 model = None
 codec_decoder = None
+device = None
 
 
 def generate(
     wav_path: str, progress_callback: Callable[[str], None] | None = None
 ) -> tuple[np.ndarray, int | float]:
-    global model, codec_decoder
+    global model, codec_decoder, device
 
     config = OmegaConf.structured(InferenceConfig())
     train_config, model_config, dataset_config, decode_config = (
@@ -162,9 +163,8 @@ def generate(
     torch.manual_seed(train_config.seed)
     random.seed(train_config.seed)
 
-    update_progress(progress_callback, "Loading model")
-
-    if model is None or codec_decoder is None:
+    if model is None or codec_decoder is None or device is None:
+        update_progress(progress_callback, "Loading model")
         model_factory = get_custom_model_factory(model_config)
         model, _ = model_factory(train_config, model_config, CKPT_PATH)
         codec_decoder = model.codec_decoder
